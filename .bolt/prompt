@@ -1,0 +1,105 @@
+### **Prompt for Creating a Modular, Reusable CRUD Module in Next.js 14 (Enhanced for Advanced Architecture)**
+
+
+---
+
+### Design and Technical Requirements
+
+- **For all designs**: Make them beautiful, not cookie cutter. Ensure webpages are fully featured, production-worthy, and aligned with the provided tech stack.
+- **Client-Side Hooks**: When using `useState`, `useEffect`, or any client-side hooks in a component treated as a Server Component by Next.js, always add the `"use client"` directive at the top of the file.
+- **Avoid Errors**: Do not write code that will trigger the error `Warning: Extra attributes from the server: %s%s (class, style)`.
+- **Template and UI Libraries**: Use JSX syntax with Tailwind CSS classes, `shadcn/ui` library for styling, React hooks, and Lucide React for icons. Do not add extra packages for UI themes or icons unless explicitly requested.
+- **Icons and Images**: Use icons from `lucide-react` and valid Unsplash URLs for stock photos where appropriate.
+
+---
+
+### Tech Stack
+
+- **Backend**: Firebase
+- **Frontend**: Next.js 14
+- **Upload and File Storage**: Firebase
+- **CSS Libraries**: `shadcn/ui`
+- **State Management**: Zustand
+- **Programming Language**: TypeScript
+
+
+### Confirm Before Proceeding
+	
+- **Before each step**, ask the user if they would like any modifications or additional details.
+- **Confirm** the use with the tech stack and requirements before proceding.And if the requirements are empty ask what the user wants to do then.Start gathering requiremnts. 
+- **Confirm** with the user if further details or requirements are needed to complete any aspect of the design.
+---
+
+1. **Define a Modular Folder Structure for Your Module**:
+   - In the `src/modules` directory, create a new folder for each feature (e.g., `product`, `user`, `auth`), following Clean Architecture principles. This modular setup will ensure each module is isolated, reusable, and follows separation of concerns.
+   - Inside each feature module (e.g., `product`), create the following subdirectories to organize business logic, infrastructure, application use cases, and UI components.
+     ```
+     <root_folder>/
+     └── modules/
+         └── [MODULE_NAME]/               # Replace [MODULE_NAME] with the feature name (e.g., product)
+             ├── core/                    # Core business logic and entity definitions
+             │   ├── entities/            # Domain models, encapsulating the core business rules
+             │   └── repositories/        # Repository interfaces that define data interactions
+             ├── application/             # Use cases for executing core business logic
+             │   └── useCases/            # CRUD operations and other business logic operations
+             ├── infrastructure/          # Repository implementations and external dependencies
+             │   └── repositories/        # Implementations for repositories (e.g., InMemory, API, Database)
+             └── interfaces/              # Presentation layer
+                 └── ui/                  # UI components and Next.js pages
+                     ├── components/      # Reusable UI components (e.g., forms, lists)
+                     └── pages/           # Pages for Next.js routes
+     ```
+
+> **Note**: This structure makes each module a self-contained "Lego piece," allowing it to be added, removed, or reused across projects with minimal modification. By following this structure, each feature module will be easy to maintain and test independently.
+
+2. **Define Core Business Logic in the `core` Layer**:
+   - In `[MODULE_NAME]/core/entities`, define a class that represents the primary entity for this module. Keep properties focused on the business data specific to the entity (e.g., `id`, `name`, `description`, etc.), allowing other properties to be added as needed for different modules.
+
+     ```typescript
+     // Replace [ENTITY_NAME] with the specific entity name (e.g., Product)
+     export class [ENTITY_NAME] {
+       constructor(
+         public readonly id: string,
+         public name: string,
+         public description: string,
+         public price: number // Adjust properties as per your entity
+       ) {}
+     }
+     ```
+
+   - In `[MODULE_NAME]/core/repositories`, define a TypeScript interface for the repository. This interface defines the contract for data interactions. The core layer does not depend on any external implementations, making it highly portable and compliant with dependency inversion principles.
+
+     ```typescript
+     export interface [ENTITY_NAME]Repository {
+       create(item: [ENTITY_NAME]): Promise<void>;
+       update(id: string, item: [ENTITY_NAME]): Promise<void>;
+       delete(id: string): Promise<void>;
+       getById(id: string): Promise<[ENTITY_NAME] | null>;
+       getAll(): Promise<[ENTITY_NAME][]>;
+     }
+     ```
+
+3. **Implement Use Cases in the `application` Layer**:
+   - In `[MODULE_NAME]/application/useCases`, create classes for each use case (e.g., `Create[ENTITY_NAME]`, `Get[ENTITY_NAME]`). Each use case should only handle a single responsibility, thereby promoting testability and adherence to the Single Responsibility Principle (SRP).
+   - Use case classes accept the repository interface as a dependency, allowing you to inject different repository implementations as needed (e.g., in-memory for testing, database for production).
+
+4. **Set Up Dependency Injection for Flexibility**:
+   - **Purpose**: Dependency Injection (DI) allows you to inject dependencies (e.g., repository implementations) dynamically, enabling flexibility in testing and different environments.
+   - **How**: Implement a basic DI setup by creating a configuration file in each module (e.g., `product`). This configuration file exports the appropriate repository or service instances based on the environment.
+
+5. **Implement Data Persistence in the `infrastructure` Layer**:
+   - In `[MODULE_NAME]/infrastructure/repositories`, create an in-memory repository implementation to match the repository interface defined in the core layer. This serves as a mock or development data store and can be swapped with a production implementation later.
+
+6. **Add a Controller Layer in `interfaces`**:
+   - **Purpose**: Controllers act as intermediaries between the UI components and the use cases, facilitating clean separation of concerns and helping manage the data flow within the UI.
+   - **How**: In `[MODULE_NAME]/interfaces/controllers`, create controllers that handle communication between the UI and use cases.
+
+7. **Add Testing Strategy for Each Layer**:
+   - **Entities**: Test entity validation logic (if any) and properties to ensure data integrity.
+   - **Use Cases**: Write unit tests for each use case, mocking repository implementations to isolate the business logic.
+   - **Repositories**: Test repository implementations independently to validate CRUD operations.
+
+8. **Error Handling and Validation**:
+   - **Purpose**: Implementing error handling ensures robustness, while validation confirms the integrity of input data before executing business logic.
+   - **How**: Add validation logic in use cases or entities and ensure the controller catches and handles any errors, passing user-friendly messages to the UI.
+

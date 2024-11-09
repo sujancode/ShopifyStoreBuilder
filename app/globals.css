@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Shopify Colors */
+  --shopify-purple: 232 84% 59%;
+  --shopify-indigo: 230 40% 56%;
+  --shopify-background: 240 3% 97%;
+  --shopify-text: 215 28% 17%;
+  --shopify-yellow: 45 100% 51%;
+  --shopify-red: 7 87% 45%;
+  
+  /* System Colors */
+  --background: var(--shopify-background);
+  --foreground: var(--shopify-text);
+  --card: 0 0% 100%;
+  --card-foreground: var(--shopify-text);
+  --popover: 0 0% 100%;
+  --popover-foreground: var(--shopify-text);
+  --primary: var(--shopify-purple);
+  --primary-foreground: 0 0% 100%;
+  --secondary: var(--shopify-indigo);
+  --secondary-foreground: 0 0% 100%;
+  --muted: 240 3% 94%;
+  --muted-foreground: 215 28% 45%;
+  --accent: var(--shopify-yellow);
+  --accent-foreground: var(--shopify-text);
+  --destructive: var(--shopify-red);
+  --destructive-foreground: 0 0% 100%;
+  --border: 240 5% 90%;
+  --input: 240 5% 90%;
+  --ring: var(--shopify-purple);
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: 215 28% 17%;
+  --foreground: 0 0% 100%;
+  /* ... rest of the dark theme colors ... */
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-sans tracking-tight;
+  }
+  h1 {
+    @apply text-4xl font-semibold;
+  }
+  h2 {
+    @apply text-3xl font-semibold;
+  }
+  h3 {
+    @apply text-2xl font-medium;
+  }
+  p {
+    @apply leading-relaxed;
+  }
+}
